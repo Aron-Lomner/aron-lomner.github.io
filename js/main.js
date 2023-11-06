@@ -22,7 +22,4 @@ let data = {
     text: 'Welcome!'
 };
 
-document.fonts.ready.then(() => {
-    console.log('eady')
-    new Particles(container, data, 5, 30);
-})
+new Particles(container, data, 5, 30);
