@@ -5,9 +5,9 @@
 body {
     background-color: black;
     color: #39FF14;
+    font-family: "Roboto Mono";
 }
 #navbar{
-    font-family: "Orbitron";
     display:  flex;
     justify-content: space-between;
     align-items: center;
@@ -41,15 +41,12 @@ body {
     color: inherit;
     text-decoration: none;
 }
-#asci-art {
+/* Welcome */
+#welcome {
     display: flex;
-    flex-wrap: wrap;
-    margin-left: auto;
-    margin-right: auto;
-}
-pre {
-    display: inline-block;
-    margin: 5px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
 }
 /* Cover */
 #cover {

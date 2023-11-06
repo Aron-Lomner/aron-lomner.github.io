@@ -23,3 +23,6 @@ export function typeWrighter(element, message) {
     loop(0);
     return message.length * 100;
 }
+export async function sleep(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+}
