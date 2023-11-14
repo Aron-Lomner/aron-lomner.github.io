@@ -2,27 +2,34 @@ import { typeWrighter, sleep } from './utils.js';
 import {Particles} from './particles.js';
 
 async function initialize(){
-    let greeting = document.getElementById('greeting')
-    let pause = typeWrighter(greeting, 'Hello, I\'m')
+    let greeting = document.getElementById('greeting');
+    let pause = typeWrighter(greeting, 'Hello, I\'m');
     await sleep(pause);
     let name = document.getElementById('name');
     pause = typeWrighter(name, 'Aron Lomner');
     await sleep(pause);
     let occupation = document.getElementById('occupation')
-    typeWrighter(occupation, 'Fullstack developer');
+    typeWrighter(occupation, 'Fullstack Developer');
 }
 
 initialize();
 
-let container = document.getElementById('welcome');
-let data = {
-    isText: true,
+let container = document.getElementById('logo');
+let settings = {
+    isText: false,
     color: '#39FF14',
     font: '18px Verdana',
-    text: 'Welcome!'
+    text: 'Welcome!',
+    imagePath: '/assets/images/logo.png',
+    imageWidth: 231,
+    imageHeight: 58,
+    mouseRadius: 15,
+    particleRadius: 1,
+    scale: 1,
+    container: container,
+    weight: 15,
 };
 
 document.fonts.ready.then(() => {
-    console.log('eady')
-    new Particles(container, data, 5, 30);
-})
+    new Particles(settings);
+});

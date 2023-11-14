@@ -1,72 +1,33 @@
-class Particle {
-    constructor(x, y, color){
-        this.posX = x,
-        this.posY = y;
-        this.orginalX = x;
-        this.orginalY = y;
-        this.color = color;
-        this.size = 1;
-        this.weight = 15;
-    }
-
-    draw(ctx) {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.posX, this.posY, this.size, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.fill();
-    }
-
-    update(mouse) {
-        let dX = mouse.x - this.posX;
-        let dY = mouse.y - this.posY;
-        let distance = Math.sqrt(dX*dX + dY * dY);
-        let velocityX = dX / distance;
-        let velocityY = dY / distance;
-        let maxDistance = mouse.radius;
-        let velocity = (maxDistance - distance) / maxDistance;
-        if (distance < mouse.radius) {
-            this.posX -= velocityX * velocity * this.weight;
-            this.posY -= velocityY * velocity * this.weight;
-        } else {
-            if (this.posX!=this.orginalX) {
-                this.posX -= (this.posX - this.orginalX) / 10;
-            } 
-            if (this.posY!=this.orginalY){
-                this.posY -= (this.posY - this.orginalY) /10;
-            }
-        }
-    }
-}
+import {Particle} from './particle.js';
 
 export class Particles {
-    constructor(container, data, scale, mouseRadius) {
-        this.data = data;
+    constructor(settings) {
+        this.settings = settings;
         this.particles = [];
         this.canvas = document.createElement('canvas');
-        let canvasSize;
-        if (data.isText) {
-            canvasSize = this.getTextSize(data.text, data.font);
-        }
-        this.canvas.width = canvasSize.width * scale;
-        this.canvas.height = canvasSize.height * scale;
-        container.appendChild(this.canvas);
         this.ctx = this.canvas.getContext('2d');
-
+        this.settings.container.appendChild(this.canvas);
+        if (this.settings.isText) {
+            let canvasSize = this.getTextSize(this.settings.text, this.settings.font);
+            this.canvas.width = canvasSize.width * this.settings.scale;
+            this.canvas.height = canvasSize.height * this.settings.scale;
+            this.imageDataTextToParticles(this.getImageData(), this.settings.scale);
+        } else {
+            this.canvas.width = this.settings.imageWidth * this.settings.scale;
+            this.canvas.height = this.settings.imageHeight * this.settings.scale;
+            this.getImageData();
+        }
         this.mouse = {
             x: null,
             y: null,
-            radius: mouseRadius
+            radius: settings.mouseRadius
         }
+
         window.addEventListener('mousemove',(event) => {
             const rect = this.canvas.getBoundingClientRect();
             this.mouse.x = event.x - rect.left;
             this.mouse.y = event.y - rect.top;
         });
-
-        
-        this.particles = this.imageDataToParticles(this.getImageData(), scale);
-        
 
         this.animate = () => {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -90,29 +51,36 @@ export class Particles {
         return {width, height};
     }
     getImageData() {
-        if (this.data.isText) {
+        if (this.settings.isText) {
             const offScreenCanvas = document.createElement('canvas');
-            let canvasSize = this.getTextSize(this.data.text, this.data.font);
-            offScreenCanvas.width = canvasSize.width; // Width of your text canvas
-            offScreenCanvas.height = canvasSize.height; // Height of your text canvas
+            let canvasSize = this.getTextSize(this.settings.text, this.settings.font);
+            offScreenCanvas.width = canvasSize.width;
+            offScreenCanvas.height = canvasSize.height;
             const offScreenCtx = offScreenCanvas.getContext('2d');
 
             offScreenCtx.fillStyle = 'white';
-            offScreenCtx.font = this.data.font;
+            offScreenCtx.font = this.settings.font;
             offScreenCtx.textAlign = 'left';
             offScreenCtx.textBaseline = 'top';
-            offScreenCtx.fillText(this.data.text, 0, 0);
+            offScreenCtx.fillText(this.settings.text, 0, 0);
 
             return offScreenCtx.getImageData(0, 0, offScreenCanvas.width, offScreenCanvas.height);
+        } else {
+            const offScreenCanvas = document.createElement('canvas');
+            offScreenCanvas.width = this.settings.imageWidth;
+            offScreenCanvas.height = this.settings.imageHeight;            const offScreenCtx = offScreenCanvas.getContext('2d');
+            const image = new Image();
+            image.src = this.settings.imagePath;
+            image.onload =  () => {
+                offScreenCtx.drawImage(image, 0, 0, offScreenCanvas.width, offScreenCanvas.height);
+                let data = offScreenCtx.getImageData(0, 0, offScreenCanvas.width, offScreenCanvas.height);
+                this.imageDataTextToParticles(data, this.settings.scale)
+            } 
         }
     }
-    /**
-     * Converts an image data object into an array of particles.
-     * @param {ImageData} imageData - The image data object containing pixel information.
-     * @param {number} percentage between 50 & 100, the percentage of pixels to keep. 100 -> all pixels; 50 -> half of pixels;
-     *  @param {Boolean} random if true each pixel has the  chance of being kept based on the percentage you passed, otherwise it is: the first percentage out of 100 is kept then the rest ignored, percentage kept rest ignored...
-     */
-    imageDataToParticles(imageData, scale) {
+    
+    imageDataTextToParticles(imageData, scale) {
+        console.log(imageData);
         let arr = [];
         //for every row of pixels
         for (let row = 0; row < imageData.height; row++) {
@@ -120,11 +88,17 @@ export class Particles {
             for (let pixel = 0; pixel < imageData.width; pixel++) {
                 const alpha = imageData.data[(row * imageData.width * 4) + (pixel * 4) + 3];
                 if(alpha  > 0) {
-                    arr.push(new Particle(pixel * scale, row * scale, this.data.color));    
+                    if (this.settings.isText){
+                        arr.push(new Particle(pixel * scale, row * scale, this.settings.color, this.settings.particleRadius, this.settings.weight));  
+                    } else {
+                        let iRed = (row * imageData.width * 4) + (pixel * 4);
+                        let color = `rgba(${imageData.data[iRed]},${imageData.data[iRed+ 1]},${imageData.data[iRed+2]},${(alpha/255).toFixed(2)})`;
+                        arr.push(new Particle(pixel * scale, row * scale, color, this.settings.particleRadius, this.settings.weight));
+                    }
                 }
             }
         }console.log(arr);
-        return arr;
+        this.particles = arr;
     }
 }
 
