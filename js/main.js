@@ -30,6 +30,4 @@ let settings = {
     weight: 15,
 };
 
-document.fonts.ready.then(() => {
-    new Particles(settings);
-});
+new Particles(container, data, 5, 30);
