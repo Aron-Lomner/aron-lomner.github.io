@@ -30,4 +30,4 @@ let settings = {
     weight: 15,
 };
 
-new Particles(container, data, 5, 30);
+new Particles(settings);
