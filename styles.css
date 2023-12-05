@@ -1,24 +1,42 @@
 /* #627091
 #A650DC */
+:root {
+    --main-color: rgb(241, 227, 179);
+    --color2: #0e8aa8;
+    --color3: rgb(36, 197, 181);
+    --color4: rgb(7, 107, 99);
+    --color5: #6e50dc;
+    --color6: rgb(255, 249, 181);
+}
+
 * {
     margin: 0;
     padding: 0;
 }
 
 body {
-    background-color: black;
-    color: #39ff14;
+    background-color: var(--main-color);
+    color: var(--color5);
     font-family: "Roboto Mono";
 }
 
+/* #navparent {
+    height: 80px;
+    position: relative;
+} */
+
 /* navbar */
 #navbar {
+    z-index: 10;
+    position: sticky;
+    top: 0px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     /* height: 50px; */
-    background-color: rgb(0, 0, 0);
-    border: 4px solid #27d2fd;
+    background-color: var(--color6);
+    /* border: 4px solid #27d2fd; */
+    box-shadow: 0px 4px 5px 0px rgb(141, 140, 107);
 }
 
 .buttons {
@@ -35,16 +53,55 @@ body {
 }
 
 .buttons a:hover {
-    text-decoration: underline #27d2fd 3px;
+    text-decoration: underline var(--color2) 3px;
 }
 
 #logo {
     margin: 10px;
 }
 
+#hamburger-menu {
+    display: hidden;
+}
+
+@media screen and (max-width: 600px) {
+    .buttons {
+        display: none;
+    }
+
+    #logo {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #hamburger-menu {
+        display: flex;
+        flex-direction: column;
+        margin-right: 5vw;
+    }
+
+    .line {
+        display: visible;
+        background-color: var(--color5);
+        width: 40px;
+        height: 1vw;
+        margin-top: 5px;
+        border-radius: 10px;
+    }
+
+    #projects-section {
+        flex-wrap: wrap;
+    }
+
+    .card {
+        margin-top: 3vh;
+    }
+}
+
 /* Cover */
 #section {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     margin: 0px 10% 0px 10%;
@@ -54,11 +111,12 @@ body {
 #me {
     margin: 20px 50px 20px 20px;
     width: 500px;
+    max-width: 70vw;
 }
 
 #greeting {
     /* background-color: #ffffff; */
-    color: #a650dc;
+    color: var(--color5);
     font-size: 28px;
     font-weight: 700;
     font-family: "kumar One Outline";
@@ -66,9 +124,9 @@ body {
 }
 
 #name {
-    color: #000;
-    text-shadow: -1px 1px 0px #39ff14, 1px -1px 0px #39ff14, 1px 1px 0px #39ff14,
-        -1px -1px 0px #39ff14;
+    color: rgb(241, 227, 179);
+    text-shadow: -2px 2px 0px var(--color3), 1px -1px 0px var(--color3), 1px 1px 0px var(--color3),
+        -1px -1px 0px var(--color3);
     font-family: "Alex Brush";
     font-size: 46px;
     font-weight: 800;
@@ -85,31 +143,35 @@ body {
 }
 
 #bio p {
-    color: #aac4ff;
+    color: #69799e;
     padding: 0px 12vw 0px 12vw;
     font-family: "Roboto Mono";
 }
+
 /* Divide */
 .divider {
-    display:  flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     margin: 0px 2vw 0px 2vw;
 }
-.line {
-    height:  2px;
-    background-color: #27d2fd;
-    flex-grow: 1;
-    /* border-bottom: 2px solid #27d2fd; */
+.divline {
+    height: 4px;
+    width: 100vw;
+    background-color: #6e50dc;
+    border-radius: 50px;
 }
+
 .text {
     margin: 0px 1vw 0px 1vw;
     font-size: 20px;
     font-weight: 900;
 }
+
 /* Project*/
 #projects-section {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-evenly;
     margin: 50px 5% 50px 5%;
@@ -133,8 +195,8 @@ body {
 }
 
 .card img {
-    width: 92%;
-    height: 70%;
+    width: 90%;
+    aspect-ratio: 1;
 }
 
 .back {

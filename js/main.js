@@ -30,4 +30,9 @@ let settings = {
     weight: 15,
 };
 
+if (window.innerWidth < 600) {
+    settings.imageHeight = settings.imageHeight / 1.2;
+    settings.imageWidth = settings.imageWidth / 1.2;
+}
+
 new Particles(settings);
