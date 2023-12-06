@@ -30,8 +30,8 @@ export class Particles {
       this.getImageData();
     }
     this.mouse = {
-      x: null,
-      y: null,
+      x: -20,
+      y: -20,
       radius: settings.mouseRadius,
     };
 
@@ -39,6 +39,23 @@ export class Particles {
       const rect = this.canvas.getBoundingClientRect();
       this.mouse.x = event.x - rect.left;
       this.mouse.y = event.y - rect.top;
+    });
+    window.addEventListener("touchstart", (event) => {
+      const rect = this.canvas.getBoundingClientRect();
+      let touch = event.touches[0];
+      this.mouse.x = touch.clientX - rect.left;
+      this.mouse.y = touch.clientY - rect.top;
+    });
+    window.addEventListener("touchmove", (event) => {
+      const rect = this.canvas.getBoundingClientRect();
+      let touch = event.touches[0];
+      this.mouse.x = touch.clientX - rect.left;
+      this.mouse.y = touch.clientY - rect.top;
+    });
+    //reset mouse when pick off screen so it doesn't stay on canvas
+    window.addEventListener("touchend", (event) => {
+      this.mouse.x = -20;
+      this.mouse.y = -20;
     });
 
     this.animate = () => {
