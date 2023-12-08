@@ -5,24 +5,30 @@
  * @returns {void}
  */
 export function typeWrighter(element, message) {
-    let typed = '';
-    let c = 0;
-    const loop = (i) =>  {
-        if (i < message.length) {
-            let cursor = c % 10 < 5 ? '|' : '';            
-            element.textContent = typed + message[i] + cursor;
-            typed += message[Math.floor(i)];
-              
-            i+=1;
-            c++;
-            setTimeout(() => loop(i), 100)
-        } else {
-            element.textContent = typed;
-        }
+  let typed = "";
+  let c = 0;
+  const loop = (i) => {
+    if (i < message.length) {
+      let cursor = c % 10 < 5 ? "|" : "";
+      element.textContent = typed + message[i] + cursor;
+      typed += message[Math.floor(i)];
+
+      i += 1;
+      c++;
+      setTimeout(() => loop(i), 100);
+    } else {
+      element.textContent = typed;
     }
-    loop(0);
-    return message.length * 100;
+  };
+  loop(0);
+  return message.length * 100;
 }
 export async function sleep(time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+export function isFlexWrapped(element) {
+  return (
+    window.getComputedStyle(element).getPropertyValue("flex-wrap") === "wrap"
+  );
 }

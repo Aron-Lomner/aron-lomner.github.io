@@ -1,4 +1,4 @@
-import { typeWrighter, sleep } from "./utils.js";
+import { typeWrighter, sleep, isFlexWrapped } from "./utils.js";
 import { Particles } from "./particles.js";
 
 async function initialize() {
@@ -13,8 +13,20 @@ async function initialize() {
 }
 
 initialize();
+function checkFlexWrap() {
+  const coverFlex = document.getElementById("section");
+  const bio = document.getElementById("bio");
+  if (isFlexWrapped(coverFlex)) {
+    bio.style.marginTop = "2vh";
+  } else {
+    bio.style.marginTop = "0px";
+  }
+}
 
+window.addEventListener("load", checkFlexWrap);
+window.addEventListener("resize", checkFlexWrap);
 let container = document.getElementById("logo");
+
 let settings = {
   isText: false,
   color: "#39FF14",

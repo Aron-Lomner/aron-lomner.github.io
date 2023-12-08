@@ -116,7 +116,6 @@ body {
 }
 
 #bio p {
-    color: #69799e;
     color: var(--secondary-color);
     font-family: "Roboto Mono";
     font-size: large;
@@ -138,7 +137,7 @@ body {
     border-radius: 50px;
 }
 
-.text {
+.divider_text {
     margin: 0px 2vw;
     font-size: 20px;
     font-weight: 900;
@@ -152,6 +151,10 @@ body {
     justify-content: center;
     align-items: center;
     margin-bottom: 40vh;
+}
+
+.project_container {
+    margin: 8vh 2vw;
 }
 
 .project_bg {
@@ -218,7 +221,8 @@ body {
     border: 2px solid var(--color3);
     transition: transform .5s ease;
 }
-.project_img:hover{
+
+.project_img:hover {
     transform: scale(1.25);
 }
 
@@ -270,17 +274,13 @@ body {
         margin-right: 5vw;
     }
 
-    .line {
+    #hamburger-menu .line {
         display: visible;
         background-color: var(--purple);
         width: 40px;
         height: 1vw;
         margin-top: 5px;
         border-radius: 10px;
-    }
-
-    #projects-section {
-        flex-wrap: wrap;
     }
 
     #bio p {
