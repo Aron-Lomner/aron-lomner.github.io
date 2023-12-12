@@ -12,7 +12,6 @@ export function typeWrighter(element, message) {
       let cursor = c % 10 < 5 ? "|" : "";
       element.textContent = typed + message[i] + cursor;
       typed += message[Math.floor(i)];
-
       i += 1;
       c++;
       setTimeout(() => loop(i), 100);

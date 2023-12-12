@@ -215,8 +215,12 @@ body {
     text-align: center;
 }
 
-.project_img {
+.project_img_anchor {
     width: 80%;
+}
+
+.project_img {
+    width: 100%;
     border-radius: 10px;
     border: 2px solid var(--color3);
     transition: transform .5s ease;
@@ -244,18 +248,25 @@ body {
 
 .github_icon {
     height: 34px;
-    aspect-ratio: 1;
+    /* aspect-ratio: 1; */
+    width: fit-content;
     border-radius: 10px;
     margin: 0px;
 }
 
-.github_icon img {
-    width: 100%;
+.github_icon .icon_logo {
+    height: 100%;
+    aspect-ratio: 1;
+}
+
+.github_icon .test_logo {
+    width: 80%;
 }
 
 .icons a {
     text-decoration: none;
     font-size: 30px;
+    display: flex;
 }
 
 @media screen and (max-width: 600px) {
