@@ -22,6 +22,14 @@ function checkFlexWrap() {
     bio.style.marginTop = "0px";
   }
 }
+const hamburger = document.getElementById("hamburger-menu");
+function toggleHamburgerMenu() {
+  hamburger.classList.toggle("selected");
+  document.querySelector(".buttons").classList.toggle("selected");
+}
+hamburger.onclick = () => {
+  toggleHamburgerMenu();
+};
 
 window.addEventListener("load", checkFlexWrap);
 window.addEventListener("resize", checkFlexWrap);

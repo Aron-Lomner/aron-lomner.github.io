@@ -9,7 +9,6 @@
     --purple: #6e50dc;
     --navbar: rgb(255, 249, 181);
     --navbar-shadow: rgb(141, 140, 107);
-
 }
 
 * {
@@ -61,6 +60,8 @@ body {
     margin: 10px;
 }
 
+
+
 #hamburger-menu {
     display: hidden;
 }
@@ -93,7 +94,8 @@ body {
 
 #name {
     color: var(--main-color);
-    text-shadow: -2px 2px 0px var(--color3), 1px -1px 0px var(--color3), 1px 1px 0px var(--color3),
+    text-shadow: -2px 2px 0px var(--color3),
+        1px -1px 0px var(--color3), 1px 1px 0px var(--color3),
         -1px -1px 0px var(--color3);
     font-family: "Alex Brush";
     font-size: 46px;
@@ -143,6 +145,36 @@ body {
     font-weight: 900;
 }
 
+/* Skills */
+.skills_section {
+    background: var(--second-bg);
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 2vh 2vw;
+}
+
+.skill_category {
+    list-style: none;
+    padding: 5vh 5vw;
+}
+
+.skill_title {
+    font-family: "kumar One Outline";
+    color: var(--purple);
+    font-size: large;
+    text-align: center;
+}
+
+.skill {
+    background: var(--main-color);
+    margin: 1vh 1vw;
+    padding: 5px;
+    text-align: center;
+    border: var(--secondary-color) solid 1px;
+    /* border-radius: 25px; */
+}
+
 /* Project*/
 #projects-section {
     display: flex;
@@ -179,13 +211,11 @@ body {
 
 .bg2 {
     z-index: 2;
-    z-index: 1;
     transform: translate(2%, -98%);
 }
 
 .bg3 {
     z-index: 3;
-    z-index: 1;
     transform: translate(4%, -96%);
 }
 
@@ -269,9 +299,35 @@ body {
     display: flex;
 }
 
+@keyframes moveAndRotate {
+    0% {
+        transform: translate(0, 0) rotate(45deg);
+    }
+
+    100% {
+        transform: translate(0, 10px) rotate(180deg);
+    }
+}
+
 @media screen and (max-width: 600px) {
     .buttons {
-        display: none;
+        display: block;
+        min-height: 100vh;
+        position: fixed;
+        flex-direction: column;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: 100%;
+        padding: 15vh 0px 0px 0px;
+        background-color: var(--second-bg);
+        transition: left 0.5s ease;
+        z-index: 1;
+    }
+
+    .buttons.selected {
+        left: 0px;
+        padding: 15vh 0px 0px 0px;
     }
 
     #logo {
@@ -283,16 +339,39 @@ body {
         display: flex;
         flex-direction: column;
         margin-right: 5vw;
+        z-index: 2;
     }
 
     #hamburger-menu .line {
         display: visible;
         background-color: var(--purple);
         width: 40px;
-        height: 1vw;
+        height: 5px;
         margin-top: 5px;
         border-radius: 10px;
+        transition: transform 0.5s ease;
     }
+
+    #hamburger-menu .l2 {
+        transition: width .5s ease;
+    }
+
+    #hamburger-menu.selected .l2 {
+        width: 0px;
+    }
+
+
+    #hamburger-menu.selected .l1 {
+        transform: translateY(10px) rotate(45deg);
+    }
+
+    #hamburger-menu.selected .l3 {
+        transform: translateY(-10px) rotate(-45deg);
+
+    }
+
+
+
 
     #bio p {
         font-size: 11px;
