@@ -182,7 +182,6 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    margin-bottom: 40vh;
 }
 
 .project_container {
@@ -303,6 +302,7 @@ body {
     display: flex;
     justify-content: center;
 }
+
 #under-construction {
     width: 50%;
 }
