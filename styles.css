@@ -299,14 +299,12 @@ body {
     display: flex;
 }
 
-@keyframes moveAndRotate {
-    0% {
-        transform: translate(0, 0) rotate(45deg);
-    }
-
-    100% {
-        transform: translate(0, 10px) rotate(180deg);
-    }
+#construction-parent {
+    display: flex;
+    justify-content: center;
+}
+#under-construction {
+    width: 50%;
 }
 
 @media screen and (max-width: 600px) {
