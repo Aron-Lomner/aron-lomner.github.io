@@ -7,6 +7,7 @@
     --color3: rgb(36, 197, 181);
     --color4: rgb(7, 107, 99);
     --purple: #6e50dc;
+    --purple-light: #9476ff;
     --navbar: rgb(255, 249, 181);
     --navbar-shadow: rgb(141, 140, 107);
 }
@@ -196,38 +197,42 @@ body {
     box-shadow: 0px 0px 2px 0px var(--color3);
 }
 
-.bg1,
-.bg2,
-.bg3 {
-    position: absolute;
-    transition: transform 0.5s ease;
-}
+@media screen and (min-width: 601px) {
 
-.bg1 {
-    z-index: 1;
-    transform: translate(2%, -98%);
-}
 
-.bg2 {
-    z-index: 2;
-    transform: translate(2%, -98%);
-}
+    .bg1,
+    .bg2,
+    .bg3 {
+        position: absolute;
+        transition: transform 0.5s ease;
+    }
 
-.bg3 {
-    z-index: 3;
-    transform: translate(4%, -96%);
-}
+    .bg1 {
+        z-index: 1;
+        transform: translate(2%, -98%);
+    }
 
-.project_container:hover .bg1 {
-    transform: translate(4%, -96%);
-}
+    .bg2 {
+        z-index: 2;
+        transform: translate(2%, -98%);
+    }
 
-.project_container:hover .bg2 {
-    transform: translate(8%, -92%);
-}
+    .bg3 {
+        z-index: 3;
+        transform: translate(4%, -96%);
+    }
 
-.project_container:hover .bg3 {
-    transform: translate(12%, -88%);
+    .project_container:hover .bg1 {
+        transform: translate(4%, -96%);
+    }
+
+    .project_container:hover .bg2 {
+        transform: translate(8%, -92%);
+    }
+
+    .project_container:hover .bg3 {
+        transform: translate(12%, -88%);
+    }
 }
 
 .project {
@@ -298,16 +303,125 @@ body {
     display: flex;
 }
 
-#construction-parent {
+
+/* Contact me */
+#contact-section {
     display: flex;
     justify-content: center;
 }
 
-#under-construction {
-    width: 50%;
+#contact-parent {
+    background: var(--second-bg);
+    display: flex;
+    justify-content: center;
+    padding: 5vh 5vw;
+    /* min-width: 50vw; */
+    margin-bottom: 20px;
+    border-radius: 10px;
+
+}
+
+h3.contact {
+    color: var(--purple);
+    font-family: "Roboto";
+}
+
+form.contact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input.contact,
+textarea.contact {
+    margin: 5px;
+    height: 35px;
+    min-width: 100%;
+    border: none;
+    border-radius: none;
+    background-color: rgb(240, 251, 255);
+    padding: 0px 10px;
+    font-family: "Roboto";
+}
+
+input.contact:focus,
+textarea.contact:focus {
+    outline: none;
+}
+
+textarea.contact {
+    padding-top: 5px;
+}
+
+button.contact {
+    background-color: var(--purple-light);
+    border: none;
+    border-radius: 100px;
+    height: 35px;
+    min-width: 60%;
+    color: var(--second-bg);
+    font-family: "Roboto";
+    margin-top: 5px;
+
+}
+
+button.contact:hover {
+    background-color: var(--purple);
+    cursor: pointer;
+}
+
+/* Footer */
+footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--purple);
+    color: var(--main-color);
+    padding: 10px 0px 0px 0px;
+    height: 20vh;
+    overflow-x: hidden;
+    padding-left: 20px;
+}
+
+a.footer {
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--main-color);
+    padding: 10px;
+    margin: 10px;
+    transform: rotateZ(30deg) translateX(-10%);
+    transition: transform .5s ease;
+}
+
+a.footer:hover {
+    transform: rotateZ(0deg);
+}
+
+img.footer {
+    height: 5vh;
+    width: 5vh;
+}
+
+p.footer.view-source {
+    color: var(--purple);
+    font-style: italic;
+    text-align: center;
 }
 
 @media screen and (max-width: 600px) {
+    a.footer {
+        transform: rotate(0deg);
+        margin: 0px;
+    }
+
+    footer {
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+
     .buttons {
         display: block;
         min-height: 100vh;
@@ -326,6 +440,24 @@ body {
     .buttons.selected {
         left: 0px;
         padding: 15vh 0px 0px 0px;
+    }
+
+    .bg0,
+    .bg1,
+    .bg2 {
+        display: none;
+    }
+
+    .bg3 {
+        position: static;
+    }
+
+    .project_container {
+        margin: 5vw 2vw;
+    }
+
+    .project_img:hover {
+        transform: none;
     }
 
     #logo {

@@ -125,7 +125,7 @@
     </div>
     <div id="projects-section">
       <div class="project_container">
-        <div class="project_bg"></div>
+        <div class="project_bg bg0"></div>
         <div class="project_bg bg1"></div>
         <div class="project_bg bg2"></div>
         <div class="project_bg bg3 project">
@@ -165,7 +165,7 @@
         </div>
       </div>
       <div class="project_container">
-        <div class="project_bg"></div>
+        <div class="project_bg bg0"></div>
         <div class="project_bg bg1"></div>
         <div class="project_bg bg2"></div>
         <div class="project_bg bg3 project">
@@ -207,7 +207,7 @@
         </div>
       </div>
       <div class="project_container">
-        <div class="project_bg"></div>
+        <div class="project_bg bg0"></div>
         <div class="project_bg bg1"></div>
         <div class="project_bg bg2"></div>
         <div class="project_bg bg3 project">
@@ -247,13 +247,69 @@
         </div>
       </div>
     </div>
-    <div id="construction-parent">
-      <img
-        id="under-construction"
-        src="/assets/images/under-construction.png"
-        alt=""
-      />
+    <div class="divider">
+      <div class="divline"></div>
+      <div class="divider_text">Contact</div>
+      <div class="divline"></div>
     </div>
+    <div id="contact-section">
+      <div id="contact-parent">
+        <!-- a6091169-d56b-48b0-9ea2-58126f3c40ed -->
+        <form
+          action="https://api.web3forms.com/submit"
+          method="POST"
+          class="contact"
+        >
+          <h3 class="contact">Contact Me</h3>
+          <input
+            type="hidden"
+            name="access_key"
+            value="a6091169-d56b-48b0-9ea2-58126f3c40ed"
+          />
+          <input
+            class="contact"
+            type="text"
+            name="name"
+            required
+            placeholder="Name"
+          />
+          <input
+            class="contact"
+            type="email"
+            name="email"
+            required
+            placeholder="Email"
+          />
+          <textarea
+            placeholder="Enter Message"
+            class="contact"
+            name="message"
+            required
+          ></textarea>
+          <input
+            type="hidden"
+            name="redirect"
+            value="https://web3forms.com/success"
+          />
+          <button class="contact" type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+    <footer>
+      <p class="footer">Copyright ©️ 2023 Aron Lomner</p>
+      <a
+        href="https://github.com/Aron-Lomner/aron-lomner.github.io"
+        target="_blank"
+        class="footer"
+      >
+        <img
+          src="assets/images/github-mark.png"
+          alt="github logo"
+          class="footer"
+        />
+        <p class="footer view-source">Source Code</p>
+      </a>
+    </footer>
   </body>
   <script type="module" src="/js/particles.js"></script>
   <script type="module" src="/js/main.js"></script>
