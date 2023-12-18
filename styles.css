@@ -282,14 +282,14 @@ body {
 
 .github_icon {
     height: 34px;
-    /* aspect-ratio: 1; */
-    width: fit-content;
+    aspect-ratio: 125/41;
     border-radius: 10px;
     margin: 0px;
 }
 
 .github_icon .icon_logo {
     height: 100%;
+
     aspect-ratio: 1;
 }
 
