@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>מרחב · התחדשות עירונית</title>
+  <meta name="description" content="מרחב — יזמות בהתחדשות עירונית. הדיירים בוחרים. אנחנו בונים. הדירה החדשה שלכם — בלי לשלם שקל." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Frank+Ruhl+Libre:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c0b0a;
+      --bg-2: #141210;
+      --bg-3: #1c1916;
+      --paper: #f4efe6;
+      --ink: #1a1612;
+      --muted: #8a8174;
+      --gold: #c4a574;
+      --gold-2: #e0c49a;
+      --line: rgba(196, 165, 116, 0.22);
+      --white: #f7f3ec;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Heebo", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    body.is-loading { overflow: hidden; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font-family: inherit; }
+
+    /* Cursor */
+    .cursor, .cursor-dot {
+      position: fixed; top: 0; left: 0; pointer-events: none; z-index: 200;
+      border-radius: 50%; mix-blend-mode: difference;
+    }
+    .cursor {
+      width: 36px; height: 36px; margin: -18px 0 0 -18px;
+      border: 1px solid rgba(224,196,154,.85);
+      transition: width .35s var(--ease), height .35s var(--ease), margin .35s var(--ease), background .35s, border-color .35s;
+    }
+    .cursor.hover {
+      width: 64px; height: 64px; margin: -32px 0 0 -32px;
+      background: rgba(196,165,116,.12); border-color: var(--gold-2);
+    }
+    .cursor-dot {
+      width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px;
+      background: var(--gold-2);
+    }
+    @media (pointer: coarse) { .cursor, .cursor-dot { display: none; } }
+
+    /* Loader */
+    .loader {
+      position: fixed; inset: 0; z-index: 300;
+      background: #0a0908;
+      display: grid; place-items: center;
+      transition: opacity .7s var(--ease-out), visibility .7s;
+    }
+    .loader.done { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-inner { text-align: center; }
+    .loader-mark {
+      width: 42px; height: 42px; margin: 0 auto 22px;
+      border: 1px solid var(--gold);
+      display: grid; place-items: center;
+      color: var(--gold); font-size: 16px; font-weight: 600;
+      animation: pulseMark 1.6s var(--ease) infinite;
+    }
+    @keyframes pulseMark {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.04); opacity: .7; }
+    }
+    .loader-name {
+      font-family: "Frank Ruhl Libre", serif;
+      font-size: 28px; letter-spacing: .18em; color: var(--gold-2);
+    }
+    .loader-bar {
+      width: 160px; height: 1px; background: rgba(196,165,116,.2);
+      margin: 22px auto 0; overflow: hidden;
+    }
+    .loader-bar i {
+      display: block; height: 100%; width: 0; background: var(--gold);
+      animation: loadBar 1.35s var(--ease-out) forwards;
+    }
+    @keyframes loadBar { to { width: 100%; } }
+    .loader-cap {
+      margin-top: 14px; font-size: 11px; letter-spacing: .28em; color: var(--muted);
+    }
+
+    .progress {
+      position: fixed; top: 0; right: 0; left: 0; height: 2px; z-index: 90;
+      background: transparent; pointer-events: none;
+    }
+    .progress i {
+      display: block; height: 100%; width: 0;
+      background: linear-gradient(90deg, transparent, var(--gold));
+      transform-origin: right center;
+    }
+
+    .demo-bar {
+      position: sticky; top: 0; z-index: 80;
+      background: #2a2118;
+      color: var(--gold-2);
+      font-size: 12px; letter-spacing: .08em;
+      text-align: center; padding: 8px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .demo-bar span { opacity: .7; margin-inline-start: 8px; font-weight: 300; }
+
+    nav {
+      position: sticky; top: 33px; z-index: 70;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 7vw;
+      background: rgba(12,11,10,.55);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid transparent;
+      transition: padding .4s var(--ease), background .4s, border-color .4s;
+    }
+    nav.scrolled {
+      padding: 12px 7vw;
+      background: rgba(12,11,10,.88);
+      border-bottom-color: var(--line);
+    }
+    .logo {
+      display: flex; align-items: baseline; gap: 10px;
+      font-weight: 700; letter-spacing: .02em;
+    }
+    .logo .mark {
+      width: 22px; height: 22px;
+      border: 1.5px solid var(--gold);
+      display: grid; place-items: center;
+      font-size: 11px; color: var(--gold);
+    }
+    .logo small { font-weight: 300; color: var(--muted); font-size: 12px; }
+
+    .nav-links { display: flex; gap: 28px; font-size: 14px; color: #d6cfc4; }
+    .nav-links a { position: relative; }
+    .nav-links a::after {
+      content: ""; position: absolute; right: 0; bottom: -4px;
+      width: 0; height: 1px; background: var(--gold);
+      transition: width .35s var(--ease);
+    }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      border: 1px solid var(--gold);
+      color: var(--gold-2);
+      padding: 8px 16px; font-size: 13px;
+      transition: background .3s, color .3s, transform .35s var(--ease);
+    }
+    .nav-cta:hover { background: var(--gold); color: var(--bg); }
+
+    .menu-btn { display: none; background: none; border: 0; color: var(--white); font-size: 22px; }
+
+    .hero {
+      position: relative; min-height: 92vh;
+      display: grid; place-items: end start;
+      overflow: hidden;
+    }
+    .hero-media { position: absolute; inset: -8% 0 -8% 0; will-change: transform; }
+    .hero-media img {
+      width: 100%; height: 100%; object-fit: cover;
+      transform: scale(1.12);
+      animation: ken 24s ease-in-out alternate infinite;
+    }
+    @keyframes ken {
+      from { transform: scale(1.12) translate3d(0,0,0); }
+      to { transform: scale(1.2) translate3d(0,-2%,0); }
+    }
+    .hero-media::after {
+      content: ""; position: absolute; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(12,11,10,.15) 0%, rgba(12,11,10,.35) 40%, rgba(12,11,10,.92) 100%),
+        linear-gradient(90deg, rgba(12,11,10,.55) 0%, transparent 55%);
+    }
+    .hero-copy {
+      position: relative; z-index: 2;
+      padding: 0 7vw 10vh;
+      max-width: 860px;
+    }
+    .eyebrow {
+      color: var(--gold);
+      font-size: 12px; letter-spacing: .28em;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-family: "Frank Ruhl Libre", serif;
+      font-weight: 500;
+      font-size: clamp(40px, 6.4vw, 84px);
+      line-height: 1.08;
+      margin-bottom: 22px;
+    }
+    .hero h1 em { font-style: normal; color: var(--gold-2); }
+    .line-mask { display: block; overflow: hidden; }
+    .line-mask span {
+      display: block;
+      transform: translateY(110%);
+    }
+    body.ready .hero .line-mask span {
+      animation: lineUp 1.05s var(--ease-out) forwards;
+    }
+    body.ready .hero .line-mask:nth-child(1) span { animation-delay: .15s; }
+    body.ready .hero .line-mask:nth-child(2) span { animation-delay: .28s; }
+    body.ready .hero .line-mask:nth-child(3) span { animation-delay: .41s; }
+    @keyframes lineUp {
+      to { transform: translateY(0); }
+    }
+    .hero p.lead {
+      font-size: 18px; font-weight: 300; color: #d8d0c4;
+      max-width: 540px; margin-bottom: 36px;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .fade-late { opacity: 0; transform: translateY(16px); }
+    body.ready .fade-late {
+      animation: rise .9s var(--ease-out) forwards;
+    }
+    body.ready .eyebrow { animation-delay: .05s; }
+    body.ready .hero p.lead { animation-delay: .7s; }
+    body.ready .hero-actions { animation-delay: .85s; }
+    body.ready .hero-meta { animation-delay: 1s; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 22px; font-size: 15px; font-weight: 500;
+      border: 0; cursor: pointer;
+      transition: transform .35s var(--ease), background .3s, color .3s, border-color .3s;
+      position: relative; overflow: hidden;
+    }
+    .btn-gold { background: var(--gold); color: #1a140c; }
+    .btn-gold::before {
+      content: ""; position: absolute; inset: 0;
+      background: var(--gold-2);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .45s var(--ease);
+      z-index: 0;
+    }
+    .btn-gold:hover::before { transform: scaleX(1); }
+    .btn-gold span { position: relative; z-index: 1; }
+    .btn-ghost { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,.28); }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold-2); }
+
+    .hero-meta {
+      position: absolute; left: 7vw; bottom: 10vh; z-index: 2;
+      display: flex; gap: 36px;
+    }
+    .hero-meta b { display: block; font-size: 28px; font-weight: 600; color: var(--gold-2); }
+    .hero-meta span { font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+
+    .scroll-hint {
+      position: absolute; bottom: 28px; right: 7vw; z-index: 2;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 11px; letter-spacing: .2em; color: var(--muted);
+    }
+    .scroll-hint .wheel {
+      width: 18px; height: 28px; border: 1px solid rgba(196,165,116,.45); border-radius: 10px;
+      position: relative;
+    }
+    .scroll-hint .wheel i {
+      position: absolute; top: 5px; right: 50%; width: 2px; height: 6px;
+      background: var(--gold); transform: translateX(50%);
+      animation: drop 1.6s var(--ease) infinite;
+    }
+    @keyframes drop {
+      0% { opacity: 1; transform: translateX(50%) translateY(0); }
+      80%, 100% { opacity: 0; transform: translateX(50%) translateY(10px); }
+    }
+
+    section { padding: 110px 7vw; }
+    .sec-kicker { color: var(--gold); font-size: 12px; letter-spacing: .26em; margin-bottom: 14px; }
+    .sec-title {
+      font-family: "Frank Ruhl Libre", serif;
+      font-size: clamp(30px, 4vw, 52px);
+      font-weight: 500; line-height: 1.15; margin-bottom: 18px;
+    }
+    .sec-sub { color: #b7aea0; max-width: 560px; font-weight: 300; }
+
+    .reveal { opacity: 0; transform: translateY(36px); }
+    .reveal.in { animation: rise .9s var(--ease-out) forwards; }
+    .reveal.d2 { animation-delay: .12s; }
+    .reveal.d3 { animation-delay: .24s; }
+    .reveal.d4 { animation-delay: .36s; }
+
+    .clip-img { overflow: hidden; }
+    .clip-img img {
+      transform: scale(1.12);
+      clip-path: inset(12% 8% 12% 8%);
+      transition: clip-path 1.15s var(--ease-out), transform 1.4s var(--ease-out);
+    }
+    .clip-img.in img { clip-path: inset(0 0 0 0); transform: scale(1); }
+
+    .model {
+      background: var(--bg-2);
+      display: grid; grid-template-columns: 1.1fr .9fr; gap: 80px; align-items: center;
+    }
+    .model-visual { position: relative; }
+    .model-visual img { width: 100%; height: 620px; object-fit: cover; }
+    .model-visual .caption {
+      position: absolute; bottom: 20px; right: 20px;
+      background: rgba(12,11,10,.72); backdrop-filter: blur(10px);
+      padding: 12px 16px; font-size: 12px; letter-spacing: .08em; color: var(--gold-2);
+    }
+    .deal { display: grid; gap: 22px; margin-top: 36px; }
+    .deal-item {
+      display: grid; grid-template-columns: 48px 1fr; gap: 16px;
+      padding-bottom: 22px; border-bottom: 1px solid var(--line);
+      opacity: 0; transform: translateX(-18px);
+    }
+    .deal-item.in { animation: slideIn .7s var(--ease-out) forwards; }
+    .deal-item:nth-child(2).in { animation-delay: .12s; }
+    .deal-item:nth-child(3).in { animation-delay: .24s; }
+    @keyframes slideIn { to { opacity: 1; transform: none; } }
+    .deal-num { color: var(--gold); font-family: "Frank Ruhl Libre", serif; font-size: 28px; line-height: 1; }
+    .deal-item h3 { font-size: 18px; font-weight: 500; margin-bottom: 6px; }
+    .deal-item p { color: #b7aea0; font-size: 15px; font-weight: 300; }
+
+    .split { display: grid; grid-template-columns: 1fr 1fr; min-height: 80vh; padding: 0; }
+    .split-text { padding: 90px 8vw; display: flex; flex-direction: column; justify-content: center; background: var(--paper); color: var(--ink); }
+    .split-text .sec-kicker { color: #8a6b3a; }
+    .split-text .sec-sub { color: #5c554b; }
+    .perk-list { margin-top: 32px; display: grid; gap: 0; }
+    .perk {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 0; border-bottom: 1px solid rgba(26,22,18,.1);
+      opacity: 0; transform: translateY(14px);
+    }
+    .perk.in { animation: rise .7s var(--ease-out) forwards; }
+    .perk i {
+      width: 28px; height: 28px; flex: none;
+      border: 1px solid #c4a574; color: #8a6b3a;
+      display: grid; place-items: center; font-style: normal; font-size: 13px;
+    }
+    .perk b { display: block; font-weight: 600; margin-bottom: 2px; }
+    .perk span { color: #5c554b; font-size: 14px; font-weight: 300; }
+    .split-img { position: relative; overflow: hidden; }
+    .split-img img {
+      width: 100%; height: 120%; object-fit: cover; min-height: 520px;
+      will-change: transform;
+    }
+
+    .steps { background: var(--bg); }
+    .steps-head { display: flex; justify-content: space-between; align-items: end; gap: 40px; margin-bottom: 56px; }
+    .timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; position: relative; }
+    .step {
+      background: var(--bg-2); padding: 28px 24px 32px;
+      border: 1px solid var(--line);
+      position: relative; overflow: hidden;
+      transition: border-color .35s, transform .5s var(--ease);
+    }
+    .step:hover { border-color: var(--gold); transform: translateY(-8px); }
+    .step .n {
+      font-family: "Frank Ruhl Libre", serif;
+      font-size: 42px; color: rgba(196,165,116,.28); line-height: 1; margin-bottom: 18px;
+      transition: color .4s, transform .5s var(--ease);
+    }
+    .step:hover .n { color: var(--gold); transform: translateY(-4px); }
+    .step h3 { font-size: 18px; margin-bottom: 10px; }
+    .step p { color: #b7aea0; font-size: 14px; font-weight: 300; }
+    .step .line {
+      position: absolute; top: 0; right: 0; height: 2px; width: 0;
+      background: var(--gold); transition: width .8s var(--ease-out);
+    }
+    .step.in .line { width: 100%; }
+
+    .why {
+      background: var(--bg-3);
+      display: grid; grid-template-columns: .85fr 1.15fr; gap: 70px; align-items: center;
+    }
+    .why img { width: 100%; height: 560px; object-fit: cover; }
+    .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 28px; }
+    .why-card {
+      padding: 22px; background: rgba(255,255,255,.03);
+      border: 1px solid var(--line);
+      transition: transform .45s var(--ease), border-color .35s, background .35s;
+    }
+    .why-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--gold);
+      background: rgba(196,165,116,.06);
+    }
+    .why-card h3 { font-size: 16px; margin-bottom: 8px; }
+    .why-card p { font-size: 14px; color: #b7aea0; font-weight: 300; }
+
+    .projects { background: var(--bg-2); }
+    .proj-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 16px; margin-top: 48px; }
+    .proj {
+      position: relative; overflow: hidden; min-height: 340px;
+      cursor: none;
+    }
+    .proj.featured { min-height: 520px; grid-row: span 2; }
+    .proj img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 1.2s var(--ease-out);
+    }
+    .proj:hover img { transform: scale(1.07); }
+    .proj .shine {
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 80%), rgba(255,255,255,.16), transparent 42%);
+      opacity: 0; transition: opacity .4s;
+    }
+    .proj:hover .shine { opacity: 1; }
+    .proj figcaption {
+      position: absolute; inset: auto 0 0 0;
+      padding: 28px 24px 22px;
+      background: linear-gradient(transparent, rgba(12,11,10,.92));
+      transform: translateY(8px);
+      transition: transform .5s var(--ease);
+    }
+    .proj:hover figcaption { transform: none; }
+    .proj figcaption small { color: var(--gold); letter-spacing: .14em; font-size: 11px; }
+    .proj figcaption h3 { font-size: 22px; font-family: "Frank Ruhl Libre", serif; font-weight: 500; }
+    .proj figcaption p { color: #cfc6b8; font-size: 13px; font-weight: 300; }
+
+    .end { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; background: var(--bg); }
+    .faq details { border-bottom: 1px solid var(--line); padding: 18px 0; }
+    .faq summary {
+      list-style: none; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 17px; font-weight: 500;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: "+"; color: var(--gold); font-size: 22px; font-weight: 300; }
+    .faq details[open] summary::after { content: "–"; }
+    .faq details p { color: #b7aea0; font-weight: 300; padding: 12px 0 6px; max-width: 520px; }
+
+    form { display: grid; gap: 12px; margin-top: 24px; }
+    form label { font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+    form input, form textarea, form select {
+      width: 100%; background: var(--bg-2); border: 1px solid var(--line);
+      color: var(--white); padding: 12px 14px; font-size: 15px;
+      outline: none; transition: border-color .3s, transform .35s var(--ease);
+    }
+    form input:focus, form textarea:focus, form select:focus {
+      border-color: var(--gold);
+    }
+    form textarea { min-height: 110px; resize: vertical; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+    .thanks { display: none; padding: 28px; border: 1px solid var(--gold); color: var(--gold-2); }
+
+    footer {
+      padding: 40px 7vw 50px;
+      border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+      color: var(--muted); font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .nav-links { display: none; }
+      .menu-btn { display: block; }
+      .hero-meta { position: relative; left: auto; bottom: auto; padding: 0 7vw 40px; }
+      .model, .why, .end, .split { grid-template-columns: 1fr; gap: 36px; }
+      .timeline, .proj-grid, .why-grid, .form-row { grid-template-columns: 1fr; }
+      .proj.featured { min-height: 360px; grid-row: auto; }
+      .model-visual img, .why img { height: 360px; }
+      section { padding: 80px 6vw; }
+      nav, nav.scrolled { padding-inline: 6vw; }
+      .scroll-hint { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important; transition: none !important;
+      }
+      .reveal, .deal-item, .perk, .fade-late { opacity: 1; transform: none; }
+      .clip-img img { clip-path: none; transform: none; }
+    }
+  </style>
+</head>
+<body class="is-loading">
+  <div class="loader" id="loader">
+    <div class="loader-inner">
+      <div class="loader-mark">מ</div>
+      <div class="loader-name">מרחב</div>
+      <div class="loader-bar"><i></i></div>
+      <div class="loader-cap">התחדשות עירונית</div>
+    </div>
+  </div>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="progress"><i id="progressBar"></i></div>
+
+  <div class="demo-bar">דמו לאתר יזם התחדשות עירונית · התוכן והפרויקטים להמחשה בלבד <span>MERHAV DEMO</span></div>
+
+  <nav id="nav">
+    <a class="logo hoverable" href="#top">
+      <span class="mark">מ</span>
+      מרחב
+      <small>התחדשות עירונית</small>
+    </a>
+    <div class="nav-links">
+      <a class="hoverable" href="#model">המודל</a>
+      <a class="hoverable" href="#returns">התמורות</a>
+      <a class="hoverable" href="#process">התהליך</a>
+      <a class="hoverable" href="#projects">פרויקטים</a>
+      <a class="hoverable" href="#faq">שאלות</a>
+    </div>
+    <a class="nav-cta hoverable" href="#contact">שיחת היכרות</a>
+    <button class="menu-btn" id="menuBtn" aria-label="תפריט">☰</button>
+  </nav>
+
+  <header class="hero" id="top">
+    <div class="hero-media" id="heroMedia">
+      <img src="assets/tower.jpg" alt="מגדל מגורים חדש אחרי התחדשות עירונית" />
+    </div>
+    <div class="hero-copy">
+      <div class="eyebrow fade-late">פינוי־בינוי · תמ״א 38/2 · מתחמים</div>
+      <h1>
+        <span class="line-mask"><span>הדירה שלכם</span></span>
+        <span class="line-mask"><span>נעשית <em>חדשה.</em></span></span>
+        <span class="line-mask"><span>בלי לשלם שקל.</span></span>
+      </h1>
+      <p class="lead fade-late">אתם בעלי הדירות. אתם בוחרים את היזם. אנחנו הורסים, בונים מחדש, ומשדרגים כל דירה — בתמורה לזכויות הבנייה העודפות שנמכרות בשוק.</p>
+      <div class="hero-actions fade-late">
+        <a class="btn btn-gold hoverable" href="#contact"><span>לבדיקת היתכנות לבניין</span></a>
+        <a class="btn btn-ghost hoverable" href="#model">איך זה עובד</a>
+      </div>
+    </div>
+    <div class="hero-meta fade-late">
+      <div><b data-count="66">0</b><span>אחוז הסכמה נדרש</span></div>
+      <div><b>0₪</b><span>עלות לדייר</span></div>
+      <div><b>+מ״ר</b><span>תוספת שטח וממ״ד</span></div>
+    </div>
+    <div class="scroll-hint fade-late"><div class="wheel"><i></i></div> גללו</div>
+  </header>
+
+  <section class="model" id="model">
+    <div class="reveal">
+      <div class="sec-kicker">העסקה</div>
+      <h2 class="sec-title">בניין משותף בוחר יזם.<br>היזם בונה את הבית החדש.</h2>
+      <p class="sec-sub">זה לא שיפוץ על חשבונכם. זו עסקת התחדשות עירונית: בעלי הדירות (כמו ועד בית / נציגות) בוחרים יזם, חותמים הסכם, ומקבלים דירה חדשה ומורחבת. היזם מממן הכול — ובתמורה מקבל את יחידות הדיור העודפות למכירה.</p>
+      <div class="deal">
+        <div class="deal-item">
+          <div class="deal-num">01</div>
+          <div>
+            <h3>אתם נשארים הבעלים</h3>
+            <p>הדירה הישנה מוחלפת בדירה חדשה על שמכם. אין תשלום, אין משכנתא חדשה בשביל הבנייה עצמה.</p>
+          </div>
+        </div>
+        <div class="deal-item">
+          <div class="deal-num">02</div>
+          <div>
+            <h3>אנחנו מממנים הכול</h3>
+            <p>תכנון, היתרים, הריסה, בנייה, שכירות חלופית, ערבויות בנקאיות, מיסים בפרויקט ומפרט משודרג.</p>
+          </div>
+        </div>
+        <div class="deal-item">
+          <div class="deal-num">03</div>
+          <div>
+            <h3>הרווח שלנו — מהיחידות העודפות</h3>
+            <p>הוועדה מאשרת זכויות בנייה נוספות. הדירות שמעבר לאלה שמוקצות לדיירים נמכרות בשוק — זה מנוע המימון.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="model-visual clip-img">
+      <img src="assets/complex.jpg" alt="מתחם מגורים מחודש עם גינה פנימית" />
+      <div class="caption">מתחם פינוי־בינוי · המחשה</div>
+    </div>
+  </section>
+
+  <div class="split" id="returns">
+    <div class="split-text reveal">
+      <div class="sec-kicker">מה מקבלים הדיירים</div>
+      <h2 class="sec-title">לא רק דירה גדולה יותר.<br>רמת חיים אחרת.</h2>
+      <p class="sec-sub">בפינוי־בינוי הבניין הישן נהרס כולו. אתם עוברים לדיור חלופי על חשבוננו, וחוזרים לדירה חדשה בתקן רעידות אדמה ועם מרחב מוגן.</p>
+      <div class="perk-list">
+        <div class="perk"><i>+</i><div><b>תוספת שטח</b><span>הרחבה טיפוסית של 12–25 מ״ר, לפי התוכנית וההסכם.</span></div></div>
+        <div class="perk"><i>+</i><div><b>ממ״ד, מעלית, מרפסת</b><span>מרחב מוגן בכל דירה, מעלית, ולרוב מרפסת שמש ומחסן.</span></div></div>
+        <div class="perk"><i>+</i><div><b>חניה פרטית</b><span>חניה תת־קרקעית בטאבו, בכפוף לתקן העירוני.</span></div></div>
+        <div class="perk"><i>+</i><div><b>שכירות חלופית</b><span>מימון מלא של דיור חלופי לאורך כל תקופת הבנייה.</span></div></div>
+        <div class="perk"><i>+</i><div><b>מעטפת ערבויות</b><span>ערבות חוק מכר, ערבות שכירות, בדק, מיסים ורישום.</span></div></div>
+      </div>
+    </div>
+    <div class="split-img clip-img">
+      <img id="splitPhoto" src="assets/interior.jpg" alt="פנים דירה חדשה עם מרפסת ונוף עירוני" />
+    </div>
+  </div>
+
+  <section class="steps" id="process">
+    <div class="steps-head reveal">
+      <div>
+        <div class="sec-kicker">התהליך</div>
+        <h2 class="sec-title">מארגון הדיירים<br>עד מפתח בדירה החדשה.</h2>
+      </div>
+      <p class="sec-sub">פינוי־בינוי הוא תהליך ארוך ומפוקח. אנחנו מלווים את הנציגות בכל צומת — בלי להשאיר אתכם מול בירוקרטיה לבד.</p>
+    </div>
+    <div class="timeline">
+      <article class="step reveal">
+        <div class="line"></div>
+        <div class="n">01</div>
+        <h3>נציגות ובחינת היתכנות</h3>
+        <p>מתכנסים בעלי הדירות, ממנים נציגות, ובודקים יחד כדאיות תכנונית וכלכלית למתחם.</p>
+      </article>
+      <article class="step reveal d2">
+        <div class="line"></div>
+        <div class="n">02</div>
+        <h3>בחירת יזם והסכם</h3>
+        <p>הדיירים בוחרים יזם — לעיתים במכרז. נחתם הסכם שמעגן תמורות, לוחות זמנים וערבויות.</p>
+      </article>
+      <article class="step reveal d3">
+        <div class="line"></div>
+        <div class="n">03</div>
+        <h3>תוכנית והיתר</h3>
+        <p>מקודמת תוכנית במסלול פינוי־בינוי או חלופה עירונית, עד להיתר בנייה ופינוי מסודר.</p>
+      </article>
+      <article class="step reveal d4">
+        <div class="line"></div>
+        <div class="n">04</div>
+        <h3>בנייה, מסירה ורישום</h3>
+        <p>הבניין הישן נהרס. נבנה החדש. אתם חוזרים לדירה, מקבלים טופס 4, והזכויות נרשמות בטאבו.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="why">
+    <div class="clip-img reveal">
+      <img src="assets/lobby.jpg" alt="לובי אבן ומסך מתכת בפרויקט חדש" />
+    </div>
+    <div class="reveal">
+      <div class="sec-kicker">למה מרחב</div>
+      <h2 class="sec-title">יזם שנבחר על ידי הדיירים — לא נכפה עליהם.</h2>
+      <p class="sec-sub">המודל הישראלי נותן לבעלי הדירות את הכוח. אנחנו מגיעים רק כשהנציגות רוצה אותנו, ומחויבים לאותן מפרטים שמובטחים גם לרוכשים החדשים.</p>
+      <div class="why-grid">
+        <div class="why-card hoverable">
+          <h3>שקיפות מול הנציגות</h3>
+          <p>דיווח שוטף, נספח תמורות ברור, וליווי משפטי עצמאי לדיירים — לא על חשבונכם.</p>
+        </div>
+        <div class="why-card hoverable">
+          <h3>חוסן פיננסי</h3>
+          <p>ליווי בנקאי לפרויקט וערבויות מלאות. בלי זה אין הריסה.</p>
+        </div>
+        <div class="why-card hoverable">
+          <h3>מפרט שווה לכולם</h3>
+          <p>מה שנמכר לשוק — זה מה שהדיירים הוותיקים מקבלים. בלי מפרט ב׳ לדיירי המתחם.</p>
+        </div>
+        <div class="why-card hoverable">
+          <h3>התאמה לגיל השלישי</h3>
+          <p>חלופות חוקיות לדיירים ותיקים: דיור מוגן, דירה מחוץ למתחם, או פיצול תמורה.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="projects" id="projects">
+    <div class="reveal">
+      <div class="sec-kicker">פרויקטים · המחשה</div>
+      <h2 class="sec-title">מתחמים בתכנון ובביצוע.</h2>
+    </div>
+    <div class="proj-grid">
+      <figure class="proj featured reveal hoverable">
+        <img src="assets/tower.jpg" alt="מגדל אבן בצהרי היום" />
+        <div class="shine"></div>
+        <figcaption>
+          <small>רמת גן · פינוי־בינוי</small>
+          <h3>מתחם הבילויים</h3>
+          <p>4 בניינים קיימים · 72 דירות לדיירים · מגדל חדש עם גינה פנימית</p>
+        </figcaption>
+      </figure>
+      <figure class="proj reveal d2 hoverable">
+        <img src="assets/complex.jpg" alt="מתחם עם פארק" />
+        <div class="shine"></div>
+        <figcaption>
+          <small>חולון · מתחם</small>
+          <h3>שדרות העצמאות</h3>
+          <p>הפקדה בתוכנית · תוספת שטח 22 מ״ר</p>
+        </figcaption>
+      </figure>
+      <figure class="proj reveal d3 hoverable">
+        <img src="assets/interior.jpg" alt="דירה עם שקיעה" />
+        <div class="shine"></div>
+        <figcaption>
+          <small>פתח תקווה · הריסה ובנייה</small>
+          <h3>רחוב אחד העם</h3>
+          <p>היתר בתוקף · פינוי מתוכנן</p>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="end">
+    <div class="faq reveal" id="faq">
+      <div class="sec-kicker">שאלות שעולות באסיפה</div>
+      <h2 class="sec-title">בשפה ברורה.</h2>
+      <details open>
+        <summary class="hoverable">מי משלם על הבנייה?</summary>
+        <p>היזם. הדיירים לא מממנים את ההריסה, הבנייה, התכנון או השכירות החלופית. המימון מגיע ממכירת יחידות הדיור העודפות שהתוכנית מאפשרת.</p>
+      </details>
+      <details>
+        <summary class="hoverable">כמה דיירים צריכים להסכים?</summary>
+        <p>בפינוי־בינוי לרוב נדרש רוב של כשני שלישים מבעלי הדירות במתחם, בכפוף לסוג המסלול ולתיקוני החקיקה העדכניים. בניין בודד במסלול הריסה־ובנייה עשוי לדרוש רף שונה. נציגות טובה בודקת את הרף המשפטי הספציפי עם עורך דין של הדיירים.</p>
+      </details>
+      <details>
+        <summary class="hoverable">מה קורה בזמן הבנייה?</summary>
+        <p>בפינוי־בינוי עוברים לדירה שכורה. היזם משלם את דמי השכירות לפי ההסכם, עד המסירה. במסלול חיזוק של בניין קיים (כשעוד רלוונטי) לעיתים נשארים בנכס — אבל זה לא המודל המרכזי שלנו.</p>
+      </details>
+      <details>
+        <summary class="hoverable">מה מקבלים בפועל בדירה החדשה?</summary>
+        <p>דירה חדשה, לרוב גדולה יותר, עם ממ״ד, מעלית, ולרוב מרפסת, מחסן וחניה. המפרט, הכיוון והקומה נקבעים בהסכם — לא בשיחה בעל־פה.</p>
+      </details>
+      <details>
+        <summary class="hoverable">ומה אם היזם נתקע באמצע?</summary>
+        <p>לכן קיימות ערבויות: ערבות חוק מכר כנגד אי־מסירה, ערבות לשכירות החלופית, וליווי בנקאי. בלי מעטפת כזו — לא מתחילים הריסה.</p>
+      </details>
+    </div>
+
+    <div class="reveal" id="contact">
+      <div class="sec-kicker">נציגות · בעלי דירות</div>
+      <h2 class="sec-title">יש לכם בניין?<br>נבדוק אותו קודם.</h2>
+      <p class="sec-sub">השאירו פרטים. נחזור עם חוות דעת ראשונית על היתכנות — בלי התחייבות ובלי לחתום על שום דבר בשיחה הראשונה.</p>
+      <form id="leadForm">
+        <div class="form-row">
+          <div>
+            <label>שם מלא</label>
+            <input name="name" required placeholder="ישראל ישראלי" />
+          </div>
+          <div>
+            <label>טלפון</label>
+            <input name="phone" required inputmode="tel" placeholder="050-0000000" />
+          </div>
+        </div>
+        <div>
+          <label>כתובת הבניין</label>
+          <input name="address" required placeholder="רחוב, מספר, עיר" />
+        </div>
+        <div class="form-row">
+          <div>
+            <label>מספר דירות בבניין / במתחם</label>
+            <input name="units" placeholder="למשל 24" />
+          </div>
+          <div>
+            <label>תפקיד</label>
+            <select name="role">
+              <option>בעל/ת דירה</option>
+              <option>חבר/ת נציגות</option>
+              <option>עו״ד מלווה דיירים</option>
+              <option>אחר</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label>הערה</label>
+          <textarea name="note" placeholder="האם כבר פנו אליכם יזמים? יש תוכנית עירונית?"></textarea>
+        </div>
+        <button class="btn btn-gold hoverable" type="submit"><span>שליחת פנייה</span></button>
+        <p class="form-note">דמו בלבד — הטופס לא נשלח לשרת אמיתי.</p>
+      </form>
+      <div class="thanks" id="thanks">תודה. בדמו הזה הפנייה נשמרת אצלכם במסך בלבד. באתר האמיתי היא תגיע לנציגות הפיתוח של מרחב.</div>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 2026 מרחב התחדשות עירונית · אתר דמו</div>
+    <div>פינוי־בינוי · הריסה ובנייה · ליווי נציגות דיירים</div>
+  </footer>
+
+  <script>
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        document.getElementById("loader").classList.add("done");
+        document.body.classList.remove("is-loading");
+        document.body.classList.add("ready");
+      }, reduce ? 0 : 1450);
+    });
+
+    const nav = document.getElementById("nav");
+    const progressBar = document.getElementById("progressBar");
+    const heroMedia = document.getElementById("heroMedia");
+    const splitPhoto = document.getElementById("splitPhoto");
+
+    const onScroll = () => {
+      const y = window.scrollY;
+      nav.classList.toggle("scrolled", y > 20);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max > 0 ? y / max : 0;
+      progressBar.style.width = (p * 100) + "%";
+      if (!reduce && heroMedia) {
+        heroMedia.style.transform = "translate3d(0," + (y * 0.18) + "px,0)";
+      }
+      if (!reduce && splitPhoto) {
+        const rect = splitPhoto.parentElement.getBoundingClientRect();
+        const mid = (window.innerHeight - rect.height) / 2;
+        const delta = (rect.top - mid) * -0.08;
+        splitPhoto.style.transform = "translate3d(0," + delta + "px,0)";
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); });
+    }, { threshold: 0.14, rootMargin: "0px 0px -8% 0px" });
+    document.querySelectorAll(".reveal, .step, .clip-img, .deal-item, .perk").forEach((el) => io.observe(el));
+
+    const counter = document.querySelector("[data-count]");
+    let counted = false;
+    const cio = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting || counted) return;
+      counted = true;
+      const target = +counter.dataset.count;
+      const start = performance.now();
+      const tick = (now) => {
+        const t = Math.min(1, (now - start) / 1100);
+        const eased = 1 - Math.pow(1 - t, 3);
+        counter.textContent = Math.round(target * eased);
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+    cio.observe(counter);
+
+    document.getElementById("leadForm").addEventListener("submit", (ev) => {
+      ev.preventDefault();
+      ev.target.style.display = "none";
+      document.getElementById("thanks").style.display = "block";
+    });
+
+    document.getElementById("menuBtn").addEventListener("click", () => {
+      const links = document.querySelector(".nav-links");
+      const open = links.style.display === "flex";
+      links.style.display = open ? "none" : "flex";
+      links.style.position = "absolute";
+      links.style.top = "100%";
+      links.style.right = "0";
+      links.style.left = "0";
+      links.style.flexDirection = "column";
+      links.style.background = "rgba(12,11,10,.96)";
+      links.style.padding = "20px 7vw 28px";
+    });
+
+    /* Quiet custom cursor + magnetic buttons */
+    const cur = document.getElementById("cursor");
+    const dot = document.getElementById("cursorDot");
+    let mx = 0, my = 0, cx = 0, cy = 0;
+    window.addEventListener("mousemove", (e) => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = "translate3d(" + mx + "px," + my + "px,0)";
+    });
+    const loop = () => {
+      cx += (mx - cx) * 0.16;
+      cy += (my - cy) * 0.16;
+      cur.style.transform = "translate3d(" + cx + "px," + cy + "px,0)";
+      requestAnimationFrame(loop);
+    };
+    if (window.matchMedia("(pointer: fine)").matches) loop();
+
+    document.querySelectorAll(".hoverable").forEach((el) => {
+      el.addEventListener("mouseenter", () => cur.classList.add("hover"));
+      el.addEventListener("mouseleave", () => {
+        cur.classList.remove("hover");
+        el.style.transform = "";
+      });
+      el.addEventListener("mousemove", (e) => {
+        if (reduce || window.innerWidth < 980) return;
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width / 2) / 10;
+        const y = (e.clientY - r.top - r.height / 2) / 10;
+        if (el.classList.contains("btn") || el.classList.contains("nav-cta") || el.classList.contains("why-card")) {
+          el.style.transform = "translate(" + x + "px," + y + "px)";
+        }
+      });
+    });
+
+    document.querySelectorAll(".proj").forEach((card) => {
+      card.addEventListener("mousemove", (e) => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", (e.clientX - r.left) + "px");
+        card.style.setProperty("--my", (e.clientY - r.top) + "px");
+      });
+    });
+  </script>
+</body>
+</html>

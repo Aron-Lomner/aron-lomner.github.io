@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>מרחב · גרסת בולד</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Frank+Ruhl+Libre:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #efe7d8;
+      --paper-2: #e6dcc8;
+      --ink: #12100e;
+      --ink-2: #2a241c;
+      --rust: #c44a1f;
+      --rust-2: #e25a28;
+      --cream: #f7f1e6;
+      --muted: #6d6456;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Heebo, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+    body.loading { overflow: hidden; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font-family: inherit; }
+
+    .loader {
+      position: fixed; inset: 0; z-index: 80;
+      background: var(--ink); color: var(--cream);
+      display: grid; place-items: center;
+      transition: transform 1s var(--ease);
+    }
+    .loader.out { transform: translateY(-100%); }
+    .loader b {
+      font-family: "Frank Ruhl Libre", serif;
+      font-size: clamp(48px, 10vw, 120px);
+      letter-spacing: -.03em;
+      clip-path: inset(0 100% 0 0);
+      animation: wipe 1s var(--ease) .15s forwards;
+    }
+    @keyframes wipe { to { clip-path: inset(0 0 0 0); } }
+
+    .demo {
+      background: var(--rust); color: #fff;
+      text-align: center; font-size: 12px; letter-spacing: .12em;
+      padding: 8px 16px; position: sticky; top: 0; z-index: 50;
+    }
+
+    nav {
+      position: sticky; top: 32px; z-index: 40;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 5vw;
+      background: rgba(239,231,216,.78);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(18,16,14,.08);
+    }
+    .logo { font-weight: 800; font-size: 20px; display: flex; gap: 10px; align-items: baseline; }
+    .logo i { font-style: normal; color: var(--rust); }
+    .nav-links { display: flex; gap: 26px; font-size: 14px; font-weight: 500; }
+    .cta {
+      background: var(--ink); color: var(--cream);
+      padding: 10px 16px; font-size: 13px; font-weight: 700;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      background: var(--ink); color: var(--cream);
+    }
+    .hero-copy { padding: 12vh 6vw 8vh; display: flex; flex-direction: column; justify-content: end; }
+    .kicker { color: var(--rust-2); letter-spacing: .28em; font-size: 12px; font-weight: 700; margin-bottom: 20px; }
+    .hero h1 {
+      font-family: "Frank Ruhl Libre", serif;
+      font-size: clamp(48px, 7.2vw, 96px);
+      line-height: .92; font-weight: 700;
+      margin-bottom: 28px;
+    }
+    .hero h1 .word { display: inline-block; overflow: hidden; vertical-align: bottom; }
+    .hero h1 .word span {
+      display: inline-block; transform: translateY(110%);
+    }
+    body.ready .hero h1 .word span {
+      animation: up 1s var(--ease) forwards;
+    }
+    .hero h1 .word:nth-child(2) span { animation-delay: .08s; }
+    .hero h1 .word:nth-child(3) span { animation-delay: .16s; }
+    .hero h1 .word:nth-child(4) span { animation-delay: .24s; }
+    .hero h1 .word:nth-child(5) span { animation-delay: .32s; }
+    .hero h1 em { font-style: normal; color: var(--rust-2); }
+    @keyframes up { to { transform: none; } }
+    .lead { font-size: 18px; max-width: 460px; opacity: .82; margin-bottom: 36px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center;
+      padding: 16px 22px; font-weight: 700; border: 0; cursor: pointer;
+      transition: transform .35s var(--ease);
+    }
+    .btn:hover { transform: translateY(-3px) scale(1.02); }
+    .btn-rust { background: var(--rust); color: #fff; }
+    .btn-line { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.3); }
+    .hero-visual { position: relative; overflow: hidden; }
+    .hero-visual img {
+      width: 100%; height: 100%; object-fit: cover; min-height: 100vh;
+      transform: scale(1.18);
+      animation: zoom 18s ease-out forwards;
+    }
+    @keyframes zoom { to { transform: scale(1); } }
+    .hero-visual::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(18,16,14,.45), transparent 40%);
+    }
+    .stamp {
+      position: absolute; bottom: 36px; left: 36px; z-index: 2;
+      width: 128px; height: 128px; border: 1.5px solid rgba(255,255,255,.55);
+      border-radius: 50%; display: grid; place-items: center; text-align: center;
+      font-size: 12px; letter-spacing: .08em; font-weight: 700;
+      animation: spin 24s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(-360deg); } }
+
+    .marquee {
+      background: var(--rust); color: #fff;
+      overflow: hidden; white-space: nowrap;
+      padding: 14px 0; font-weight: 700; letter-spacing: .08em;
+      border-top: 1px solid rgba(0,0,0,.12);
+    }
+    .marquee-track {
+      display: inline-flex; gap: 48px;
+      animation: slide 22s linear infinite;
+    }
+    @keyframes slide {
+      from { transform: translateX(0); }
+      to { transform: translateX(50%); }
+    }
+
+    section { padding: 100px 5vw; }
+    .sec-kicker { color: var(--rust); font-size: 12px; letter-spacing: .24em; font-weight: 700; margin-bottom: 12px; }
+    .sec-title {
+      font-family: "Frank Ruhl Libre", serif;
+      font-size: clamp(32px, 5vw, 64px);
+      line-height: 1.05; margin-bottom: 16px;
+    }
+    .sec-sub { max-width: 520px; color: var(--muted); font-size: 17px; }
+
+    .reveal { opacity: 0; transform: translateY(40px) scale(.98); }
+    .reveal.in { animation: pop .85s var(--ease) forwards; }
+    @keyframes pop { to { opacity: 1; transform: none; } }
+
+    .model { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .nums { margin-top: 40px; display: grid; gap: 0; }
+    .num-row {
+      display: grid; grid-template-columns: 70px 1fr; gap: 16px;
+      padding: 22px 0; border-top: 1px solid rgba(18,16,14,.12);
+      opacity: 0; transform: translateX(-24px);
+    }
+    .num-row.in { animation: pop .7s var(--ease) forwards; }
+    .num-row strong { font-family: "Frank Ruhl Libre", serif; font-size: 32px; color: var(--rust); }
+    .frame { overflow: hidden; position: relative; }
+    .frame img {
+      width: 100%; height: 640px; object-fit: cover;
+      clip-path: inset(100% 0 0 0);
+      transform: scale(1.1);
+    }
+    .frame.in img {
+      animation: open 1.2s var(--ease) forwards;
+    }
+    @keyframes open {
+      to { clip-path: inset(0 0 0 0); transform: scale(1); }
+    }
+
+    .split {
+      display: grid; grid-template-columns: .9fr 1.1fr;
+      background: var(--ink); color: var(--cream); padding: 0;
+    }
+    .split img { width: 100%; height: 100%; min-height: 620px; object-fit: cover; }
+    .split-copy { padding: 90px 6vw; }
+    .perk {
+      display: flex; justify-content: space-between; gap: 20px;
+      padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.12);
+      font-size: 18px; font-weight: 500;
+      opacity: 0; transform: translateY(16px);
+    }
+    .perk.in { animation: pop .6s var(--ease) forwards; }
+    .perk span { color: var(--rust-2); font-size: 13px; letter-spacing: .08em; }
+
+    .steps { background: var(--paper-2); }
+    .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 48px; }
+    .card {
+      background: var(--cream); padding: 28px 22px 36px;
+      min-height: 260px;
+      transition: transform .45s var(--ease), background .35s;
+    }
+    .card:hover { transform: translateY(-10px) rotate(-.4deg); background: #fff; }
+    .card .n { font-size: 56px; font-family: "Frank Ruhl Libre", serif; color: var(--rust); line-height: 1; margin-bottom: 18px; }
+    .card h3 { font-size: 20px; margin-bottom: 10px; }
+    .card p { color: var(--muted); font-size: 14px; }
+
+    .why { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
+    .why-img { overflow: hidden; }
+    .why-img img { width: 100%; height: 560px; object-fit: cover; }
+    .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 28px; }
+    .tile {
+      padding: 22px; background: #fff; border: 1px solid rgba(18,16,14,.08);
+      transition: transform .4s var(--ease), background .3s, color .3s;
+    }
+    .tile:hover { background: var(--ink); color: var(--cream); transform: scale(1.03); }
+    .tile h3 { margin-bottom: 8px; }
+    .tile p { color: var(--muted); font-size: 14px; }
+    .tile:hover p { color: #cfc6b8; }
+
+    .projects .proj-wrap { display: grid; grid-template-columns: 1.3fr 1fr; gap: 14px; margin-top: 40px; }
+    .proj { position: relative; overflow: hidden; min-height: 280px; }
+    .proj.big { min-height: 580px; grid-row: span 2; }
+    .proj img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease); }
+    .proj:hover img { transform: scale(1.1) rotate(.6deg); }
+    .proj figcaption {
+      position: absolute; inset: auto 0 0; padding: 24px;
+      background: linear-gradient(transparent, rgba(18,16,14,.85));
+      color: #fff;
+    }
+    .proj small { color: var(--rust-2); letter-spacing: .12em; font-size: 11px; font-weight: 700; }
+    .proj h3 { font-family: "Frank Ruhl Libre", serif; font-size: 28px; }
+
+    .end { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; }
+    details { border-bottom: 2px solid var(--ink); padding: 16px 0; }
+    summary { list-style: none; font-size: 20px; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; color: var(--rust); }
+    details[open] summary::after { content: "–"; }
+    details p { padding-top: 10px; color: var(--muted); max-width: 480px; }
+
+    form { display: grid; gap: 10px; margin-top: 24px; }
+    label { font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+    input, textarea, select {
+      width: 100%; border: 2px solid var(--ink); background: transparent;
+      padding: 12px; font-size: 16px; outline: none;
+    }
+    input:focus, textarea:focus { border-color: var(--rust); }
+    textarea { min-height: 100px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .thanks { display: none; padding: 24px; background: var(--ink); color: var(--cream); }
+    footer {
+      padding: 28px 5vw 40px; display: flex; justify-content: space-between;
+      border-top: 2px solid var(--ink); font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .hero, .model, .split, .why, .end, .projects .proj-wrap, .grid4, .tiles, .row { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hero-visual img, .proj.big { min-height: 360px; }
+      .stamp { width: 88px; height: 88px; font-size: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+      .reveal, .num-row, .perk { opacity: 1; transform: none; }
+      .frame img { clip-path: none; }
+    }
+  </style>
+</head>
+<body class="loading">
+  <div class="loader" id="loader"><b>מרחב</b></div>
+  <div class="demo">גרסת השוואה · תמה בולד / אור · אנימציות חזקות יותר</div>
+
+  <nav>
+    <a class="logo" href="#top">מרחב <i>בולד</i></a>
+    <div class="nav-links">
+      <a href="#model">המודל</a>
+      <a href="#returns">תמורות</a>
+      <a href="#process">תהליך</a>
+      <a href="#projects">פרויקטים</a>
+    </div>
+    <a class="cta" href="#contact">שיחת היכרות</a>
+  </nav>
+
+  <header class="hero" id="top">
+    <div class="hero-copy">
+      <div class="kicker">פינוי־בינוי · הריסה ובנייה</div>
+      <h1>
+        <span class="word"><span>דירה</span></span>
+        <span class="word"><span>חדשה.</span></span><br>
+        <span class="word"><span>בלי</span></span>
+        <span class="word"><span>לשלם</span></span>
+        <span class="word"><span><em>שקל.</em></span></span>
+      </h1>
+      <p class="lead">הדיירים בוחרים יזם. אנחנו בונים את הבניין מחדש. אתם מקבלים דירה משודרגת — אנחנו את היחידות העודפות.</p>
+      <div class="hero-actions">
+        <a class="btn btn-rust" href="#contact">בדקו את הבניין</a>
+        <a class="btn btn-line" href="#model">איך העסקה עובדת</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <img src="assets/tower.jpg" alt="" />
+      <div class="stamp">התחדשות<br>עירונית<br>2026</div>
+    </div>
+  </header>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>פינוי־בינוי</span><span>ממ״ד</span><span>מעלית</span><span>חניה בטאבו</span><span>ערבות חוק מכר</span><span>שכירות חלופית</span><span>0 ₪ לדייר</span>
+      <span>פינוי־בינוי</span><span>ממ״ד</span><span>מעלית</span><span>חניה בטאבו</span><span>ערבות חוק מכר</span><span>שכירות חלופית</span><span>0 ₪ לדייר</span>
+    </div>
+  </div>
+
+  <section class="model" id="model">
+    <div class="reveal">
+      <div class="sec-kicker">העסקה</div>
+      <h2 class="sec-title">אתם הבעלים.<br>אנחנו המנוע.</h2>
+      <p class="sec-sub">נציגות הבניין בוחרת יזם. היזם מממן הריסה, בנייה ושכירות. הרווח מגיע רק מהדירות העודפות שנמכרות בשוק.</p>
+      <div class="nums">
+        <div class="num-row"><strong>01</strong><div><b>נשארים בעלים</b><p>דירה חדשה על שמכם. בלי לשלם על הבנייה.</p></div></div>
+        <div class="num-row"><strong>02</strong><div><b>מממנים הכול</b><p>תכנון, היתר, הריסה, דיור חלופי, ערבויות.</p></div></div>
+        <div class="num-row"><strong>03</strong><div><b>מוכרים עודף</b><p>זכויות הבנייה הנוספות הן התמורה שלנו.</p></div></div>
+      </div>
+    </div>
+    <div class="frame">
+      <img src="assets/complex.jpg" alt="" />
+    </div>
+  </section>
+
+  <div class="split" id="returns">
+    <div class="frame">
+      <img src="assets/interior.jpg" alt="" />
+    </div>
+    <div class="split-copy reveal">
+      <div class="sec-kicker">התמורות</div>
+      <h2 class="sec-title">לא שיפוץ.<br>קפיצת מדרגה.</h2>
+      <div style="margin-top:28px">
+        <div class="perk">תוספת 12–25 מ״ר <span>שטח</span></div>
+        <div class="perk">ממ״ד + מעלית + מרפסת <span>בטיחות</span></div>
+        <div class="perk">חניה תת־קרקעית בטאבו <span>חניה</span></div>
+        <div class="perk">שכירות חלופית מלאה <span>פינוי</span></div>
+        <div class="perk">ערבות חוק מכר ומעטפת <span>הגנה</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section class="steps" id="process">
+    <div class="reveal">
+      <div class="sec-kicker">ארבעה צעדים</div>
+      <h2 class="sec-title">מהאסיפה הראשונה<br>עד המפתח.</h2>
+    </div>
+    <div class="grid4">
+      <article class="card reveal"><div class="n">01</div><h3>נציגות והיתכנות</h3><p>בעלי הדירות מתארגנים. בודקים כדאיות למתחם.</p></article>
+      <article class="card reveal"><div class="n">02</div><h3>בחירת יזם</h3><p>אתם בוחרים. נחתם הסכם תמורות וערבויות.</p></article>
+      <article class="card reveal"><div class="n">03</div><h3>תוכנית והיתר</h3><p>פינוי־בינוי או חלופה עירונית — עד היתר.</p></article>
+      <article class="card reveal"><div class="n">04</div><h3>בנייה ומסירה</h3><p>הריסה, בנייה, טופס 4, רישום בטאבו.</p></article>
+    </div>
+  </section>
+
+  <section class="why">
+    <div class="why-img frame">
+      <img src="assets/lobby.jpg" alt="" />
+    </div>
+    <div class="reveal">
+      <div class="sec-kicker">למה אנחנו</div>
+      <h2 class="sec-title">נבחרים.<br>לא נכפים.</h2>
+      <div class="tiles">
+        <div class="tile"><h3>שקיפות</h3><p>נספח תמורות גלוי וליווי משפטי לדיירים.</p></div>
+        <div class="tile"><h3>חוסן</h3><p>ליווי בנקאי. בלי ערבויות — אין הריסה.</p></div>
+        <div class="tile"><h3>מפרט אחד</h3><p>מה שנמכר בשוק הוא מה שהדיירים מקבלים.</p></div>
+        <div class="tile"><h3>גיל שלישי</h3><p>חלופות חוקיות לדיירים ותיקים.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="projects" id="projects">
+    <div class="reveal">
+      <div class="sec-kicker">המחשה</div>
+      <h2 class="sec-title">מתחמים בתנועה.</h2>
+    </div>
+    <div class="proj-wrap">
+      <figure class="proj big reveal">
+        <img src="assets/tower.jpg" alt="" />
+        <figcaption><small>רמת גן</small><h3>מתחם הבילויים</h3></figcaption>
+      </figure>
+      <figure class="proj reveal">
+        <img src="assets/complex.jpg" alt="" />
+        <figcaption><small>חולון</small><h3>שדרות העצמאות</h3></figcaption>
+      </figure>
+      <figure class="proj reveal">
+        <img src="assets/interior.jpg" alt="" />
+        <figcaption><small>פתח תקווה</small><h3>אחד העם</h3></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="end" id="contact">
+    <div class="reveal">
+      <div class="sec-kicker">שאלות</div>
+      <h2 class="sec-title">בלי סיבובים.</h2>
+      <details open><summary>מי משלם?</summary><p>היזם. המימון מגיע ממכירת היחידות העודפות.</p></details>
+      <details><summary>כמה הסכמה צריך?</summary><p>לרוב כשני שלישים במתחם פינוי־בינוי, לפי המסלול והחוק העדכני.</p></details>
+      <details><summary>איפה גרים בזמן הבנייה?</summary><p>בדירה שכורה. אנחנו מממנים את השכירות לפי ההסכם.</p></details>
+      <details><summary>מה אם היזם נתקע?</summary><p>ערבות חוק מכר, ערבות שכירות וליווי בנקאי. בלי זה לא הורסים.</p></details>
+    </div>
+    <div class="reveal">
+      <div class="sec-kicker">נציגות</div>
+      <h2 class="sec-title">יש בניין?<br>נדבר.</h2>
+      <form id="f">
+        <div class="row">
+          <div><label>שם</label><input required /></div>
+          <div><label>טלפון</label><input required /></div>
+        </div>
+        <div><label>כתובת הבניין</label><input required /></div>
+        <div class="row">
+          <div><label>מספר דירות</label><input /></div>
+          <div><label>תפקיד</label>
+            <select><option>בעל/ת דירה</option><option>נציגות</option><option>עו״ד דיירים</option></select>
+          </div>
+        </div>
+        <button class="btn btn-rust" type="submit">שליחה</button>
+      </form>
+      <div class="thanks" id="t">נשלח בדמו בלבד. תודה.</div>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 2026 מרחב · גרסת בולד להשוואה</div>
+    <div>פינוי־בינוי</div>
+  </footer>
+
+  <script>
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    addEventListener("load", () => {
+      setTimeout(() => {
+        document.getElementById("loader").classList.add("out");
+        document.body.classList.remove("loading");
+        document.body.classList.add("ready");
+      }, reduce ? 0 : 1100);
+    });
+    const io = new IntersectionObserver((ents) => {
+      ents.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); });
+    }, { threshold: .14 });
+    document.querySelectorAll(".reveal, .frame, .num-row, .perk, .card").forEach((el) => io.observe(el));
+    document.getElementById("f").onsubmit = (e) => {
+      e.preventDefault(); e.target.style.display = "none";
+      document.getElementById("t").style.display = "block";
+    };
+  </script>
+</body>
+</html>
